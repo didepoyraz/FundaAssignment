@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace FundaWeb.Models
 {
-    public class AgencyModel
+    public class FundaResponseModel
     {
-        public int MyProperty { get; set; }
+        public List<FundaPropertyModel> Objects { get; set; } = new();
     }
 }

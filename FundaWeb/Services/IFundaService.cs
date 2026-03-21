@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using FundaWeb.Models;
 
 namespace FundaWeb.Services
 {
-    public class IFundaService
+    public interface IFundaService
     {
-        Task<List<MakelaarCount>> GetTopMakelaars();
-        Task<List<MakelaarCount>> GetTopMakelaarsWithTuin();
+        Task<List<FundaPropertyModel>> GetTopMakelaars();
+        Task<List<FundaPropertyModel>> GetTopMakelaarsWithTuin();
     }
 }

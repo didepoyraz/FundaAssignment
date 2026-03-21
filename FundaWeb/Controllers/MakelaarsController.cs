@@ -2,9 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Mvc;
+using FundaWeb.Services;
+// Constructor Injection: Added the service as a constructor parameter and the runtime
+//  will resolve the service from the service container
 namespace FundaWeb.Controllers
 {
+    // The [ApiController] attribute makes model validation
+    //  errors automatically trigger an HTTP 400 response. 
     [ApiController]
     [Route("api/makelaars")]
     public class MakelaarsController: ControllerBase
@@ -25,9 +30,9 @@ namespace FundaWeb.Controllers
 
         // Top makelaars with a tuin 
         [HttpGet("tuin")]
-        public async Task<IActionResult> GetTopMakelaarsWithGarden()
+        public async Task<IActionResult> GetTopMakelaarsWithTuin()
         {
-            var result = await _fundaService.GetTopMakelaarsWithGarden();
+            var result = await _fundaService.GetTopMakelaarsWithTuin();
             return Ok(result);
         }
     }

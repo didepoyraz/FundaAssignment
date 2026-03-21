@@ -1,15 +1,19 @@
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
+using FundaWeb.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
 
 // The app now knows how to create http clients for calling external APIs
 builder.Services.AddHttpClient<IFundaService, FundaService>();
 
 var app = builder.Build();
+app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
