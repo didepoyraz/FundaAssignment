@@ -24,16 +24,30 @@ namespace FundaWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTopMakelaars()
         {
-            var result = await _fundaService.GetTopMakelaars();
-            return Ok(result);
+            try
+            {
+                var result = await _service.GetTopMakelaars();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Something went wrong");
+            }
         }
 
         // Top makelaars with a tuin 
         [HttpGet("tuin")]
         public async Task<IActionResult> GetTopMakelaarsWithTuin()
         {
-            var result = await _fundaService.GetTopMakelaarsWithTuin();
-            return Ok(result);
+            try
+            {
+                var result = await _service.GetTopMakelaarsWithTuin();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Something went wrong");
+            }
         }
     }
 }
