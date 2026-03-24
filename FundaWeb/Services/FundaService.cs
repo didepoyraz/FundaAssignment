@@ -1,87 +1,78 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Net.Http.Json;
-using System.Reflection.Metadata;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualBasic;
 using FundaWeb.Models;
-using System.Collections.Specialized;
-
 namespace FundaWeb.Services
 {
     public class FundaService: IFundaService
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey = "76666a29898f491480386d966b75f949";
-        // var search = withGarden ? "/amsterdam/tuin/" : "/amsterdam/";
+        private readonly int pageNumber = 25;
         public FundaService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public async Task<List<FundaPropertyModel>> GetTopMakelaars()
- { 
-            var page = 1;
-            var search = "/amsterdam/";
+        public async Task<List<MakelaarCountModel>> GetTop10(string search)
+        { 
+            // todo: implement error handling for api calls
+            var counts = new Dictionary<int, MakelaarCountModel>();
 
-            // todo: go through all pages of the listings implement error handling for api calls
-            // todo: extract the top 10 makelaars with most listings from the counts dict
-            // todo: implement null check
-
-            var url = $"http://partnerapi.funda.nl/feeds/Aanbod.svc/json/{_apiKey}/?type=koop&zo={search}&page={page}&pagesize=25";
-            var response = await _httpClient.GetFromJsonAsync<FundaResponseModel>(url);
+            for (int page = 1; page <= pageNumber; page++)
+            {
+                var url = $"http://partnerapi.funda.nl/feeds/Aanbod.svc/json/{_apiKey}/?type=koop&zo={search}&page={page}&pagesize=25";
+                var response = await _httpClient.GetFromJsonAsync<FundaResponseModel>(url);
           
-            var counts = new Dictionary<string, int>();
-            foreach (var item in response.Objects)
-            {
-                var makelaar = item.MakelaarNaam;
-                if (counts.ContainsKey(makelaar))
+                if (response == null || response.Objects == null)
                 {
-                    counts[makelaar] = counts[makelaar] + 1;
+                    break;
                 }
-                else
-                {
-                    counts[makelaar] = 1;
-                }
-            }
-            foreach (var pair in counts)
-            {
-                Console.WriteLine($"Makelaar: {pair.Key}, Count: {pair.Value}");
-            }
 
-            return response.Objects;
+                foreach (var item in response.Objects)
+                {
+                    var id = item.MakelaarID;
+                    var name = item.MakelaarNaam;
+
+                    if (counts.ContainsKey(id))
+                    {
+                        counts[id].Count++;
+                    }
+                    else
+                    {
+                        counts[id] = new MakelaarCountModel
+                        {
+                            Makelaar = name,
+                            Count = 1
+                        };
+                    }
+                }
+                page++;
+            }
+            // x.Key is the MakelaarId
+            // x.Value is the MakelaarInfo object
+            var result = counts
+                .OrderByDescending(x => x.Value.Count)
+                .Take(10)
+                .Select(x => new MakelaarCountModel
+                {
+                    Makelaar = x.Value.Makelaar,
+                    Count = x.Value.Count
+                })
+                .ToList();
+
+            return result;
+        }
+        public async Task<List<MakelaarCountModel>> GetTopMakelaars()
+        {
+            var search = "/amsterdam/";
+            return await GetTop10(search);
         }
 
-        public async Task<List<FundaPropertyModel>> GetTopMakelaarsWithTuin()
+        public async Task<List<MakelaarCountModel>> GetTopMakelaarsWithTuin()
         { 
-            // temporary page holder
-            var page = 1;
-            var search = "/amsterdam/";
-            
-            var url = $"http://partnerapi.funda.nl/feeds/Aanbod.svc/json/{_apiKey}/?type=koop&zo={search}&page={page}&pagesize=25";
-            var response = await _httpClient.GetFromJsonAsync<FundaResponseModel>(url);
-            var counts = new Dictionary<string, int>();
-            foreach (var item in response.Objects)
-            {
-                var makelaar = item.MakelaarNaam;
-                if (counts.ContainsKey(makelaar))
-                {
-                    counts[makelaar] = counts[makelaar] + 1;
-                }
-                else
-                {
-                    counts[makelaar] = 1;
-                }
-            }
-
-            return response.Objects;
+            var search = "/amsterdam/tuin/";
+            return await GetTop10(search);
         }
     }
 }
