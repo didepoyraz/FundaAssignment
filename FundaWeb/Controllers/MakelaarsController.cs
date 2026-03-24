@@ -26,7 +26,7 @@ namespace FundaWeb.Controllers
         {
             try
             {
-                var result = await _service.GetTopMakelaars();
+                var result = await _fundaService.GetTopMakelaars();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -41,7 +41,7 @@ namespace FundaWeb.Controllers
         {
             try
             {
-                var result = await _service.GetTopMakelaarsWithTuin();
+                var result = await _fundaService.GetTopMakelaarsWithTuin();
                 return Ok(result);
             }
             catch (Exception ex)

@@ -9,5 +9,6 @@ namespace FundaWeb.Models
     {
         public int MakelaarID { get; set; }
         public string MakelaarNaam { get; set; } = "";
+        public bool IsVerkocht { get; set; }
     }
 }

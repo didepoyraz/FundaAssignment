@@ -31,6 +31,11 @@ namespace FundaWeb.Services
 
                 foreach (var item in response.Objects)
                 {
+                    if (item.IsVerkocht)
+                    {
+                        continue;
+                    }
+                        
                     var id = item.MakelaarID;
                     var name = item.MakelaarNaam;
 
