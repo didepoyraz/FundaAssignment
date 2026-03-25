@@ -20,7 +20,6 @@ namespace FundaWeb.Services
 
             for (int page = 1; page <= maxPages; page++)
             {
-                Console.WriteLine($"Fetching page {page}");
                 var url = $"http://partnerapi.funda.nl/feeds/Aanbod.svc/json/{_apiKey}/?type=koop&zo={search}&page={page}&pagesize=25";
                 var response = await _httpClient.GetFromJsonAsync<FundaResponseModel>(url);
           
@@ -52,7 +51,6 @@ namespace FundaWeb.Services
                         };
                     }
                 }
-                Console.WriteLine($"Page {page} returned {response?.Objects?.Count ?? 0} objects");
             }
             // x.Key is the MakelaarId
             // x.Value is the MakelaarInfo object

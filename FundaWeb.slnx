@@ -1,2 +1,5 @@
 <Solution>
+  <Project Path="Funda.Tests/Funda.Tests.csproj" />
+  <Project Path="FundaTests/FundaTests.csproj" />
+  <Project Path="FundaWeb.Tests/FundaWeb.Tests.csproj" />
 </Solution>

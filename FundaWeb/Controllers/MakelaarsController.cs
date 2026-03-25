@@ -29,13 +29,12 @@ namespace FundaWeb.Controllers
                 var result = await _fundaService.GetTopMakelaars();
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Something went wrong");
             }
         }
 
-        // Top makelaars with a tuin 
         [HttpGet("tuin")]
         public async Task<IActionResult> GetTopMakelaarsWithTuin()
         {
@@ -44,7 +43,7 @@ namespace FundaWeb.Controllers
                 var result = await _fundaService.GetTopMakelaarsWithTuin();
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Something went wrong");
             }
