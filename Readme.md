@@ -30,8 +30,8 @@ I used AI tools selectively to:
 navigate to http://localhost:\<port\>/api/makelaars
 
 #### Endpoints
-GET /api/makelaars
-GET /api/makelaars/tuin
+- GET /api/makelaars
+- GET /api/makelaars/tuin
 
 ---
 
