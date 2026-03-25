@@ -1,6 +1,6 @@
-using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
 using FundaWeb.Services;
+using FundaWeb.Policies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,14 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
-
-// The app now knows how to create http clients for calling external APIs
-builder.Services.AddHttpClient<IFundaService, FundaService>();
+builder.Services.AddHttpClient<IFundaService, FundaService>()
+    .AddPolicyHandler(RetryPolicy.GetFundaRetryPolicy());
 
 var app = builder.Build();
-app.MapControllers();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -23,56 +20,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", () => "Hello Funda");
+app.MapControllers();
 
-// app.MapGet("test-funda", async (IHttpClientFactory httpClientFactory) =>
-// {
-//     var client = httpClientFactory.CreateClient();
-
-//     var url = "http://partnerapi.funda.nl/feeds/Aanbod.svc/json/76666a29898f491480386d966b75f949/?type=koop&zo=/amsterdam/&page=1&pagesize=25";
-
-//     var response = await client.GetAsync(url);
-
-//     if (!response.IsSuccessStatusCode)
-//     {
-//         return Results.Problem($"Funda API returned status code {response.StatusCode}");
-//     }
-
-//     var content = await response.Content.ReadAsStringAsync();
-//     var document = JsonDocument.Parse(content);
-//     var objects = document.RootElement.GetProperty("Objects");
-//     var makelaars = new List<string>();
-
-//     foreach (var item in objects.EnumerateArray())
-//     {
-//         var makelaar = item.GetProperty("MakelaarNaam").GetString();
-//         makelaars.Add(makelaar);
-//     }
-
-//     return Results.Ok(makelaars);
-// });
-// var summaries = new[]
-// {
-//     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-// };
-
-// app.MapGet("/weatherforecast", () =>
-// {
-//     var forecast =  Enumerable.Range(1, 5).Select(index =>
-//         new WeatherForecast
-//         (
-//             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-//             Random.Shared.Next(-20, 55),
-//             summaries[Random.Shared.Next(summaries.Length)]
-//         ))
-//         .ToArray();
-//     return forecast;
-// })
-// .WithName("GetWeatherForecast");
+app.MapGet("/", () => "Welcome to Dide's Funda Assignment! \n--------------\n To see top 10 real estate agents with most listings for sale, go to the api/makelaars endpoint! \n--------------\n To see top 10 real estate agents with the most listings for sale with gardens go to api/makelaars/tuin endpoint!");
 
 app.Run();
-
-// record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-// {
-//     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-// }
